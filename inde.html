@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steelwool Africa - KPI Evaluation</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    /* Tab Navigation */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .tab-btn {
+      flex: 1;
+      padding: 12px 20px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #64748b;
+    }
+    
+    .tab-btn:hover {
+      background: #f1f5f9;
+    }
+    
+    .tab-btn.active {
+      background: #2563eb;
+      color: white;
+    }
+    
+    /* Tab Content */
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    
+    .header-icon {
+      background: #2563eb;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    
+    .header-text h1 {
+      color: #1e293b;
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+    
+    .header-text p {
+      color: #64748b;
+      font-size: 14px;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .form-group label {
+      color: #475569;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    
+    .form-group input,
+    .form-group select {
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #1e293b;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    
+    .section-icon {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .dept-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    
+    .dept-btn {
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      background: #f8fafc;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+    
+    .dept-btn:hover {
+      background: #e2e8f0;
+    }
+    
+    .dept-btn.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+    
+    .kpi-item {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    
+    .kpi-info h3 {
+      color: #1e293b;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    
+    .kpi-info p {
+      color: #64748b;
+      font-size: 13px;
+    }
+    
+    .kpi-score-input {
+      width: 80px;
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: #2563eb;
+      transition: width 0.3s;
+      border-radius: 4px;
+    }
+    
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    
+    .score-card {
+      padding: 24px;
+      border-radius: 12px;
+      border: 2px solid;
+    }
+    
+    .score-card.outstanding {
+      background: #d4edda;
+      border-color: #28a745;
+    }
+    
+    .score-card.exceeds {
+      background: #d1ecf1;
+      border-color: #17a2b8;
+    }
+    
+    .score-card.meets {
+      background: #fff3cd;
+      border-color: #ffc107;
+    }
+    
+    .score-card.needs {
+      background: #ffe5b4;
+      border-color: #fd7e14;
+    }
+    
+    .score-card.unsatisfactory {
+      background: #f8d7da;
+      border-color: #dc3545;
+    }
+    
+    .score-value {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 8px 0;
+    }
+    
+    .score-label {
+      color: #64748b;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    
+    .score-rating {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+    
+    .rating-scale {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    
+    .rating-scale h3 {
+      color: #475569;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .rating-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+    
+    .rating-score {
+      font-weight: 600;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #059669;
+    }
+    
+    .btn-info {
+      background: #0891b2;
+      color: white;
+    }
+    
+    .btn-info:hover {
+      background: #0e7490;
+    }
+    
+    .btn-full {
+      width: 100%;
+      justify-content: center;
+      margin-top: 16px;
+    }
+    
+    .guidelines {
+      background: #dbeafe;
+      border: 1px solid #93c5fd;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    
+    .guidelines h3 {
+      color: #1e40af;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+    
+    .guidelines ul {
+      list-style: none;
+      color: #1e40af;
+      font-size: 13px;
+    }
+    
+    .guidelines li {
+      padding: 6px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    
+    .guidelines li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+    }
+    
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    
+    .alert.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .alert.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .alert.show {
+      display: block;
+    }
+    
+    /* View Evaluation Styles */
+    .eval-display {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+    
+    .eval-display.show {
+      display: block;
+    }
+    
+    .eval-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .eval-field {
+      padding: 10px;
+      background: #f8fafc;
+      border-radius: 6px;
+    }
+    
+    .eval-field label {
+      display: block;
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    
+    .eval-field .value {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .dept-buttons {
+        grid-template-columns: 1fr;
+      }
+      
+      .kpi-header {
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      .tabs {
+        flex-direction: column;
+      }
+      
+      .eval-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Alert Messages -->
+    <div id="alert" class="alert"></div>
+    
+    <!-- Tab Navigation -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('new-eval')">
+        📝 New Evaluation
+      </button>
+      <button class="tab-btn" onclick="switchTab('view-eval')">
+        🔍 View/Download
+      </button>
+      <button class="tab-btn" onclick="switchTab('cumulative')">
+        📊 Cumulative Report
+      </button>
+    </div>
+    
+    <!-- TAB 1: NEW EVALUATION -->
+    <div id="new-eval" class="tab-content active">
+      <!-- Header -->
+      <div class="card">
+        <div class="header">
+          <div class="header-icon">SA</div>
+          <div class="header-text">
+            <h1>Steelwool Africa</h1>
+            <p>Employee Performance Evaluation System</p>
+          </div>
+        </div>
+        
+        <!-- Employee Information -->
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Employee Name</label>
+            <input type="text" id="employeeName" placeholder="Enter name">
+          </div>
+          <div class="form-group">
+            <label>Employee ID</label>
+            <input type="text" id="employeeId" placeholder="Enter ID">
+          </div>
+          <div class="form-group">
+            <label>Evaluation Week</label>
+            <input type="text" id="evaluationWeek" placeholder="e.g., Week 1, Jan 2026">
+          </div>
+          <div class="form-group">
+            <label>Supervisor Name</label>
+            <input type="text" id="supervisorName" placeholder="Enter supervisor name">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Department Selection -->
+      <div class="card">
+        <div class="section-title">
+          <span>📋</span>
+          <span>Select Department</span>
+        </div>
+        <div class="dept-buttons">
+          <button class="dept-btn active" onclick="selectDepartment('Production Steelex')">Production Steelex</button>
+          <button class="dept-btn" onclick="selectDepartment('Production Steelwool')">Production Steelwool</button>
+          <button class="dept-btn" onclick="selectDepartment('Production Electrodes')">Production Electrodes</button>
+          <button class="dept-btn" onclick="selectDepartment('Inventory')">Inventory</button>
+          <button class="dept-btn" onclick="selectDepartment('Maintenance')">Maintenance</button>
+        </div>
+      </div>
+      
+      <!-- Department-Specific KPIs -->
+      <div class="card">
+        <div class="section-title">
+          <span>📊</span>
+          <span>Department-Specific KPIs</span>
+        </div>
+        <div id="deptKPIs"></div>
+      </div>
+      
+      <!-- Universal KPIs -->
+      <div class="card">
+        <div class="section-title">
+          <span>✓</span>
+          <span>Universal KPIs (All Departments)</span>
+        </div>
+        <div id="universalKPIs"></div>
+      </div>
+      
+      <!-- Performance Summary -->
+      <div class="card">
+        <div class="section-title">
+          <span>🎯</span>
+          <span>Performance Summary</span>
+        </div>
+        <div class="summary-grid">
+          <div id="scoreCard" class="score-card">
+            <div class="score-label">Overall Score</div>
+            <div class="score-value" id="totalScore">0.0%</div>
+            <div class="score-rating" id="rating">Not Rated</div>
+          </div>
+          <div class="rating-scale">
+            <h3>Rating Scale:</h3>
+            <div class="rating-item">
+              <span class="rating-score" style="color: #28a745;">90-100%</span>
+              <span>Outstanding</span>
+            </div>
+            <div class="rating-item">
+              <span class="rating-score" style="color: #17a2b8;">80-89%</span>
+              <span>Exceeds Expectations</span>
+            </div>
+            <div class="rating-item">
+              <span class="rating-score" style="color: #ffc107;">70-79%</span>
+              <span>Meets Expectations</span>
+            </div>
+            <div class="rating-item">
+              <span class="rating-score" style="color: #fd7e14;">60-69%</span>
+              <span>Needs Improvement</span>
+            </div>
+            <div class="rating-item">
+              <span class="rating-score" style="color: #dc3545;">Below 60%</span>
+              <span>Unsatisfactory</span>
+            </div>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary btn-full" onclick="downloadReport()">
+          <span>⬇</span>
+          <span>Download Evaluation Report</span>
+        </button>
+        
+        <button class="btn btn-success btn-full" onclick="saveToSheet()">
+          <span>💾</span>
+          <span>Save to Google Sheets</span>
+        </button>
+      </div>
+      
+      <!-- Guidelines -->
+      <div class="card guidelines">
+        <h3>Evaluation Guidelines:</h3>
+        <ul>
+          <li>Each KPI should be scored from 0-100 based on observable performance</li>
+          <li>Safety Compliance and SOP Adherence are critical - scores below 70% require immediate action</li>
+          <li>Conduct evaluations weekly and maintain consistent scoring standards</li>
+          <li>Document specific incidents or observations that support the scores</li>
+          <li>Discuss results with employees and create action plans for improvement areas</li>
+          <li>Keep all evaluation records for performance appraisal and development planning</li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- TAB 2: VIEW/DOWNLOAD EVALUATION -->
+    <div id="view-eval" class="tab-content">
+      <div class="card">
+        <div class="header">
+          <div class="header-icon">🔍</div>
+          <div class="header-text">
+            <h1>View & Download Evaluation</h1>
+            <p>Search and download previous evaluations</p>
+          </div>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Employee ID</label>
+            <input type="text" id="searchEmployeeId" placeholder="Enter Employee ID" onchange="loadWeeksForEmployee()">
+          </div>
+          <div class="form-group">
+            <label>Department</label>
+            <select id="searchDepartment" onchange="loadWeeksForEmployee()">
+              <option value="">Select Department</option>
+              <option value="Production Steelex">Production Steelex</option>
+              <option value="Production Steelwool">Production Steelwool</option>
+              <option value="Production Electrodes">Production Electrodes</option>
+              <option value="Inventory">Inventory</option>
+              <option value="Maintenance">Maintenance</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Evaluation Week</label>
+            <select id="searchWeek" disabled>
+              <option value="">Select week first</option>
+            </select>
+          </div>
+          <div class="form-group" style="display: flex; align-items: flex-end;">
+            <button class="btn btn-info" onclick="loadEvaluation()" style="width: 100%;">
+              <span>🔍</span>
+              <span>Load Evaluation</span>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Evaluation Display -->
+        <div id="evalDisplay" class="eval-display">
+          <h3 style="margin-bottom: 16px; color: #1e293b;">Evaluation Details</h3>
+          
+          <div class="eval-grid">
+            <div class="eval-field">
+              <label>Employee Name</label>
+              <div class="value" id="dispName">-</div>
+            </div>
+            <div class="eval-field">
+              <label>Employee ID</label>
+              <div class="value" id="dispId">-</div>
+            </div>
+            <div class="eval-field">
+              <label>Department</label>
+              <div class="value" id="dispDept">-</div>
+            </div>
+            <div class="eval-field">
+              <label>Week</label>
+              <div class="value" id="dispWeek">-</div>
+            </div>
+            <div class="eval-field">
+              <label>Supervisor</label>
+              <div class="value" id="dispSupervisor">-</div>
+            </div>
+            <div class="eval-field">
+              <label>Total Score</label>
+              <div class="value" id="dispScore">-</div>
+            </div>
+            <div class="eval-field" style="grid-column: 1 / -1;">
+              <label>Performance Rating</label>
+              <div class="value" id="dispRating">-</div>
+            </div>
+          </div>
+          
+          <button class="btn btn-primary btn-full" onclick="redownloadReport()" id="redownloadBtn">
+            <span>⬇</span>
+            <span>Download This Evaluation Report</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- TAB 3: CUMULATIVE REPORT -->
+    <div id="cumulative" class="tab-content">
+      <div class="card">
+        <div class="header">
+          <div class="header-icon">📊</div>
+          <div class="header-text">
+            <h1>Cumulative Performance Report</h1>
+            <p>Generate average performance report across all weeks</p>
+          </div>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Employee ID</label>
+            <input type="text" id="cumulativeEmployeeId" placeholder="Enter Employee ID">
+          </div>
+          <div class="form-group">
+            <label>Department</label>
+            <select id="cumulativeDepartment">
+              <option value="">Select Department</option>
+              <option value="Production Steelex">Production Steelex</option>
+              <option value="Production Steelwool">Production Steelwool</option>
+              <option value="Production Electrodes">Production Electrodes</option>
+              <option value="Inventory">Inventory</option>
+              <option value="Maintenance">Maintenance</option>
+            </select>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary btn-full" onclick="generateCumulative()">
+          <span>📊</span>
+          <span>Generate Cumulative Report</span>
+        </button>
+        
+        <div class="guidelines" style="margin-top: 20px;">
+          <h3>About Cumulative Reports:</h3>
+          <ul>
+            <li>Shows average performance across ALL evaluation weeks for the employee</li>
+            <li>Includes individual KPI averages for both department-specific and universal KPIs</li>
+            <li>Displays overall average score and performance rating</li>
+            <li>Lists all weekly scores for performance trend analysis</li>
+            <li>Useful for performance reviews, promotions, and development planning</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Department KPI Definitions
+     const departments = {
+      'Production Steelex': {
+        kpis: [
+          { name: 'Daily Production Target Achievement', weight: 40 },
+          { name: 'Product Quality (Defect Rate)', weight: 30 },
+          { name: 'Machine Utilization Efficiency', weight: 20 },
+          { name: 'Raw Material Wastage Control', weight: 10 }
+        ]
+      },
+      'Production Steelwool': {
+        kpis: [
+          { name: 'Daily Production Volume vs Target', weight: 40 },
+          { name: 'Quality Standards Compliance', weight: 30 },
+          { name: 'Production Line Efficiency', weight: 20 },
+          { name: 'Scrap/Waste Minimization', weight: 10 }
+        ]
+      },
+      'Production Electrodes': {
+        kpis: [
+          { name: 'Production Output Achievement', weight: 40 },
+          { name: 'Product Specification Adherence', weight: 30 },
+          { name: 'Machine Runtime/Availability Ratio', weight: 20 },
+          { name: 'Machine Utilisation Efficiency', weight: 10 }
+        ]
+      },
+      'Inventory': {
+        kpis: [
+          { name: 'Stock Accuracy (Physical vs System)', weight: 40 },
+          { name: 'Timely Stock Replenishment', weight: 30 },
+          { name: 'Proper Documentation & Records', weight: 20 },
+          { name: 'Storage & Organization Standards', weight: 10 }
+        ]
+      },
+      'Maintenance': {
+        kpis: [
+          { name: 'Preventive Maintenance Schedule Completion', weight: 40 },
+          { name: 'Equipment Breakdown Response Time', weight: 30 },
+          { name: 'Maintenance Quality (Repeat Failures)', weight: 20 },
+          { name: 'Tools & Equipment Management', weight: 10 }
+        ]
+      }
+    };
+    
+    const universalKPIs = [
+      { name: 'Discipline & Work Conduct', weight: 30 },
+      { name: 'SOP Adherence', weight: 30 },
+      { name: 'Safety Compliance & PPE Usage', weight: 15 },
+      { name: 'Punctuality (On-time Reporting)', weight: 15 },
+      { name: 'Attendance (Days Present)', weight: 10 }
+    ];
+    
+    let currentDepartment = 'Production Steelex';
+    let scores = {};
+    let loadedEvalData = null; // Store loaded evaluation for re-download
+    
+    // Tab Switching
+    function switchTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Remove active from all buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Show selected tab
+      document.getElementById(tabName).classList.add('active');
+      
+      // Set active button
+      event.target.classList.add('active');
+    }
+    
+    // Initialize
+    function init() {
+      renderDepartmentKPIs();
+      renderUniversalKPIs();
+    }
+    
+    function selectDepartment(dept) {
+      currentDepartment = dept;
+      
+      // Update button states
+      document.querySelectorAll('.dept-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent === dept) {
+          btn.classList.add('active');
+        }
+      });
+      
+      renderDepartmentKPIs();
+      calculateTotal();
+    }
+    
+    function renderDepartmentKPIs() {
+      const container = document.getElementById('deptKPIs');
+      const kpis = departments[currentDepartment].kpis;
+      
+      container.innerHTML = kpis.map((kpi, index) => `
+        <div class="kpi-item">
+          <div class="kpi-header">
+            <div class="kpi-info">
+              <h3>${kpi.name}</h3>
+              <p>Weight: ${kpi.weight}%</p>
+            </div>
+            <input type="number" 
+                   class="kpi-score-input" 
+                   id="dept_${index}"
+                   min="0" 
+                   max="100" 
+                   placeholder="0-100"
+                   onchange="updateScore('dept_${index}', this.value)">
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress_dept_${index}" style="width: 0%"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function renderUniversalKPIs() {
+      const container = document.getElementById('universalKPIs');
+      
+      container.innerHTML = universalKPIs.map((kpi, index) => `
+        <div class="kpi-item">
+          <div class="kpi-header">
+            <div class="kpi-info">
+              <h3>${kpi.name}</h3>
+              <p>Weight: ${kpi.weight}%</p>
+            </div>
+            <input type="number" 
+                   class="kpi-score-input" 
+                   id="universal_${index}"
+                   min="0" 
+                   max="100" 
+                   placeholder="0-100"
+                   onchange="updateScore('universal_${index}', this.value)">
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress_universal_${index}" style="width: 0%"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function updateScore(id, value) {
+      value = Math.min(100, Math.max(0, parseInt(value) || 0));
+      scores[id] = value;
+      
+      // Update progress bar
+      const progressBar = document.getElementById('progress_' + id);
+      if (progressBar) {
+        progressBar.style.width = value + '%';
+      }
+      
+      calculateTotal();
+    }
+    
+   function calculateTotal() {
+      const deptKPIs = departments[currentDepartment].kpis;
+      
+      // Calculate department KPIs score (out of 100)
+      let deptScore = 0;
+      deptKPIs.forEach((kpi, index) => {
+        const score = scores['dept_' + index] || 0;
+        deptScore += (score * kpi.weight) / 100;
+      });
+      
+      // Calculate universal KPIs score (out of 100)
+     let universalScore = 0;
+      universalKPIs.forEach((kpi, index) => {
+        const score = scores['universal_' + index] || 0;
+        universalScore += (score * kpi.weight) / 100;
+      });
+      // Final score: 50% from dept + 50% from universal
+      const finalScore = ((deptScore * 0.5) + (universalScore * 0.5)).toFixed(1);
+      
+      // Update display
+      document.getElementById('totalScore').textContent = finalScore + '%';
+      
+      // Update rating
+      const rating = getPerformanceRating(parseFloat(finalScore));
+      document.getElementById('rating').textContent = rating.text;
+      
+      const scoreCard = document.getElementById('scoreCard');
+      scoreCard.className = 'score-card ' + rating.class;
+    }
+    
+    function getPerformanceRating(score) {
+      if (score >= 90) return { text: 'Outstanding', class: 'outstanding' };
+      if (score >= 80) return { text: 'Exceeds Expectations', class: 'exceeds' };
+      if (score >= 70) return { text: 'Meets Expectations', class: 'meets' };
+      if (score >= 60) return { text: 'Needs Improvement', class: 'needs' };
+      return { text: 'Unsatisfactory', class: 'unsatisfactory' };
+    }
+    
+    function showAlert(message, type) {
+      const alert = document.getElementById('alert');
+      alert.textContent = message;
+      alert.className = 'alert ' + type + ' show';
+      setTimeout(() => {
+        alert.classList.remove('show');
+      }, 5000);
+    }
+    
+    function downloadReport() {
+      const employeeName = document.getElementById('employeeName').value;
+      const employeeId = document.getElementById('employeeId').value;
+      const evaluationWeek = document.getElementById('evaluationWeek').value;
+      const supervisorName = document.getElementById('supervisorName').value;
+      
+      if (!employeeName || !employeeId) {
+        showAlert('Please enter employee name and ID', 'error');
+        return;
+      }
+      
+      const btn = event.target;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span>⏳</span><span>Generating PDF...</span>';
+      btn.disabled = true;
+      
+      const deptKPIs = departments[currentDepartment].kpis;
+      const totalScore = document.getElementById('totalScore').textContent;
+      const rating = document.getElementById('rating').textContent;
+      
+      const deptKPIData = deptKPIs.map((kpi, index) => {
+        const score = scores['dept_' + index] || 0;
+        return {
+          name: kpi.name,
+          score: score,
+          weight: kpi.weight,
+          weighted: ((score * kpi.weight) / 100).toFixed(1)
+        };
+      });
+      
+      const universalKPIData = universalKPIs.map((kpi, index) => {
+        const score = scores['universal_' + index] || 0;
+        return {
+          name: kpi.name,
+          score: score,
+          weight: kpi.weight,
+          weighted: ((score * kpi.weight) / 100).toFixed(1)
+        };
+      });
+      
+      const reportData = {
+        employeeName: employeeName,
+        employeeId: employeeId,
+        department: currentDepartment,
+        evaluationWeek: evaluationWeek,
+        supervisorName: supervisorName,
+        deptKPIs: deptKPIData,
+        universalKPIs: universalKPIData,
+        totalScore: totalScore,
+        rating: rating
+      };
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          
+          if (result.success) {
+            showAlert('PDF report generated successfully! Opening in new tab...', 'success');
+            window.open(result.fileUrl, '_blank');
+          } else {
+            showAlert('Error: ' + result.message, 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          showAlert('Error generating PDF report: ' + error, 'error');
+        })
+        .generatePDFReport(reportData);
+    }
+    
+    function saveToSheet() {
+      const employeeName = document.getElementById('employeeName').value;
+      const employeeId = document.getElementById('employeeId').value;
+      const evaluationWeek = document.getElementById('evaluationWeek').value;
+      const supervisorName = document.getElementById('supervisorName').value;
+      
+      if (!employeeName || !employeeId || !evaluationWeek || !supervisorName) {
+        showAlert('Please fill in all employee information fields', 'error');
+        return;
+      }
+      
+      const deptKPIs = departments[currentDepartment].kpis;
+      const totalScore = parseFloat(document.getElementById('totalScore').textContent);
+      const rating = document.getElementById('rating').textContent;
+      
+      const data = {
+        department: currentDepartment,
+        employeeName: employeeName,
+        employeeId: employeeId,
+        evaluationWeek: evaluationWeek,
+        supervisorName: supervisorName,
+        deptKPI1: scores['dept_0'] || 0,
+        deptKPI2: scores['dept_1'] || 0,
+        deptKPI3: scores['dept_2'] || 0,
+        deptKPI4: scores['dept_3'] || 0,
+        punctuality: scores['universal_0'] || 0,
+        attendance: scores['universal_1'] || 0,
+        safety: scores['universal_2'] || 0,
+        sop: scores['universal_3'] || 0,
+        discipline: scores['universal_4'] || 0,
+        totalScore: totalScore,
+        rating: rating
+      };
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showAlert(result.message + ' Form cleared for next evaluation.', 'success');
+            setTimeout(() => {
+              resetForm();
+            }, 1500);
+          } else {
+            showAlert(result.message, 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          showAlert('Error saving to sheet: ' + error, 'error');
+        })
+        .saveEvaluation(data);
+    }
+    
+    function resetForm() {
+      document.getElementById('employeeName').value = '';
+      document.getElementById('employeeId').value = '';
+      document.getElementById('evaluationWeek').value = '';
+      document.getElementById('supervisorName').value = '';
+      
+      scores = {};
+      
+      const deptKPIs = departments[currentDepartment].kpis;
+      deptKPIs.forEach((kpi, index) => {
+        const input = document.getElementById('dept_' + index);
+        if (input) input.value = '';
+        const progress = document.getElementById('progress_dept_' + index);
+        if (progress) progress.style.width = '0%';
+      });
+      
+      universalKPIs.forEach((kpi, index) => {
+        const input = document.getElementById('universal_' + index);
+        if (input) input.value = '';
+        const progress = document.getElementById('progress_universal_' + index);
+        if (progress) progress.style.width = '0%';
+      });
+      
+      document.getElementById('totalScore').textContent = '0.0%';
+      document.getElementById('rating').textContent = 'Not Rated';
+      document.getElementById('scoreCard').className = 'score-card';
+    }
+    
+    // VIEW/DOWNLOAD TAB FUNCTIONS
+    function loadWeeksForEmployee() {
+      const empId = document.getElementById('searchEmployeeId').value;
+      const dept = document.getElementById('searchDepartment').value;
+      
+      if (!empId || !dept) {
+        return;
+      }
+      
+      const weekDropdown = document.getElementById('searchWeek');
+      weekDropdown.innerHTML = '<option value="">Loading...</option>';
+      weekDropdown.disabled = true;
+      
+      google.script.run
+        .withSuccessHandler(function(weeks) {
+          weekDropdown.innerHTML = '<option value="">Select week</option>';
+          weeks.forEach(week => {
+            weekDropdown.innerHTML += `<option value="${week}">${week}</option>`;
+          });
+          weekDropdown.disabled = false;
+        })
+        .withFailureHandler(function(error) {
+          showAlert('Error loading weeks: ' + error, 'error');
+          weekDropdown.innerHTML = '<option value="">Error loading weeks</option>';
+        })
+        .getWeeksForEmployee(empId, dept);
+    }
+    
+    function loadEvaluation() {
+      const empId = document.getElementById('searchEmployeeId').value;
+      const dept = document.getElementById('searchDepartment').value;
+      const week = document.getElementById('searchWeek').value;
+      
+      if (!empId || !dept || !week) {
+        showAlert('Please select Employee ID, Department, and Week', 'error');
+        return;
+      }
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            loadedEvalData = result.data;
+            loadedEvalData.department = dept; // Add department to loaded data
+            
+            // Display the evaluation
+            document.getElementById('dispName').textContent = result.data.employeeName;
+            document.getElementById('dispId').textContent = result.data.employeeId;
+            document.getElementById('dispDept').textContent = dept;
+            document.getElementById('dispWeek').textContent = result.data.week;
+            document.getElementById('dispSupervisor').textContent = result.data.supervisor;
+            document.getElementById('dispScore').textContent = result.data.totalScore + '%';
+            document.getElementById('dispRating').textContent = result.data.rating;
+            
+            // Show the display
+            document.getElementById('evalDisplay').classList.add('show');
+            
+            showAlert('Evaluation loaded successfully!', 'success');
+          } else {
+            showAlert(result.message, 'error');
+            document.getElementById('evalDisplay').classList.remove('show');
+          }
+        })
+        .withFailureHandler(function(error) {
+          showAlert('Error loading evaluation: ' + error, 'error');
+        })
+        .getEvaluationData(empId, week, dept);
+    }
+    
+    function redownloadReport() {
+      if (!loadedEvalData) {
+        showAlert('Please load an evaluation first', 'error');
+        return;
+      }
+      
+      const btn = document.getElementById('redownloadBtn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span>⏳</span><span>Generating PDF...</span>';
+      btn.disabled = true;
+      
+      // Get department KPIs for this department
+      const deptKPIs = departments[loadedEvalData.department].kpis;
+      
+      // Prepare KPI data
+      const deptKPIData = deptKPIs.map((kpi, index) => {
+        const scoreKey = 'deptKPI' + (index + 1);
+        const score = loadedEvalData[scoreKey] || 0;
+        return {
+          name: kpi.name,
+          score: score,
+          weight: kpi.weight,
+          weighted: ((score * kpi.weight) / 100).toFixed(1)
+        };
+      });
+      
+   const universalKPIData = [
+        { name: 'Discipline & Work Conduct', score: loadedEvalData.discipline || 0, weight: 30, weighted: ((loadedEvalData.discipline || 0) * 0.30).toFixed(1) },
+        { name: 'SOP Adherence', score: loadedEvalData.sop || 0, weight: 30, weighted: ((loadedEvalData.sop || 0) * 0.30).toFixed(1) },
+        { name: 'Safety Compliance & PPE Usage', score: loadedEvalData.safety || 0, weight: 15, weighted: ((loadedEvalData.safety || 0) * 0.15).toFixed(1) },
+        { name: 'Punctuality (On-time Reporting)', score: loadedEvalData.punctuality || 0, weight: 15, weighted: ((loadedEvalData.punctuality || 0) * 0.15).toFixed(1) },
+        { name: 'Attendance (Days Present)', score: loadedEvalData.attendance || 0, weight: 10, weighted: ((loadedEvalData.attendance || 0) * 0.10).toFixed(1) }
+      ];
+      
+      const reportData = {
+        employeeName: loadedEvalData.employeeName,
+        employeeId: loadedEvalData.employeeId,
+        department: loadedEvalData.department,
+        evaluationWeek: loadedEvalData.week,
+        supervisorName: loadedEvalData.supervisor,
+        deptKPIs: deptKPIData,
+        universalKPIs: universalKPIData,
+        totalScore: loadedEvalData.totalScore + '%',
+        rating: loadedEvalData.rating
+      };
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          
+          if (result.success) {
+            showAlert('PDF report generated successfully! Opening in new tab...', 'success');
+            window.open(result.fileUrl, '_blank');
+          } else {
+            showAlert('Error: ' + result.message, 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          showAlert('Error generating PDF: ' + error, 'error');
+        })
+        .generatePDFReport(reportData);
+    }
+    
+    // CUMULATIVE REPORT FUNCTIONS
+    function generateCumulative() {
+      const empId = document.getElementById('cumulativeEmployeeId').value;
+      const dept = document.getElementById('cumulativeDepartment').value;
+      
+      if (!empId || !dept) {
+        showAlert('Please enter Employee ID and select Department', 'error');
+        return;
+      }
+      
+      const btn = event.target;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span>⏳</span><span>Generating Cumulative Report...</span>';
+      btn.disabled = true;
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          
+          if (result.success) {
+            showAlert('Cumulative report generated successfully! Opening in new tab...', 'success');
+            window.open(result.fileUrl, '_blank');
+          } else {
+            showAlert(result.message, 'error');
+          }
+        })
+        .withFailureHandler(function(error) {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          showAlert('Error generating cumulative report: ' + error, 'error');
+        })
+        .generateCumulativeReport(empId, dept);
+    }
+    
+    // Initialize on load
+    window.onload = init;
+  </script>
+</body>
+</html>
