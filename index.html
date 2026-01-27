@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Steelwool Africa Employee Performance Evaluation System">
+  <meta name="theme-color" content="#2563eb">
+  
+  <title>Steelwool Africa - KPI Evaluation System</title>
+  
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Alert Messages -->
+    <div id="alert" class="alert"></div>
+    
+    <!-- Offline Indicator -->
+    <div id="offline-indicator" class="offline-indicator">
+      <span>📡</span>
+      <span>You're offline - data will sync when connection is restored</span>
+    </div>
+    
+    <!-- Tab Navigation -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('new-eval')">
+        📝 New Evaluation
+      </button>
+      <button class="tab-btn" onclick="switchTab('view-eval')">
+        🔍 View Saved
+      </button>
+      <button class="tab-btn" onclick="switchTab('export')">
+        📤 Export Data
+      </button>
+    </div>
+    
+    <!-- TAB 1: NEW EVALUATION -->
+    <div id="new-eval" class="tab-content active">
+      <!-- Header -->
+      <div class="card">
+        <div class="header">
+          <div class="header-icon">SA</div>
+          <div class="header-text">
+            <h1>Steelwool Africa</h1>
+            <p>Employee Performance Evaluation System</p>
+          </div>
+        </div>
+        
+        <!-- Employee Information -->
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Employee Name</label>
+            <input type="text" id="employeeName" placeholder="Enter name">
+          </div>
+          <div class="form-group">
+            <label>Employee ID</label>
+            <input type="text" id="employeeId" placeholder="Enter ID">
+          </div>
+          <div class="form-group">
+            <label>Evaluation Week</label>
+            <input type="text" id="evaluationWeek" placeholder="e.g., Week 1, Jan 2026">
+          </div>
+          <div class="form-group">
+            <label>Supervisor Name</label>
+            <input type="text" id="supervisorName" placeholder="Enter supervisor name">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Department Selection -->
+      <div class="card">
+        <div class="section-title">
+          <span>📋</span>
+          <span>Select Department</span>
+        </div>
+        <div class="dept-buttons">
+          <button class="dept-btn active" onclick="selectDepartment('Production Steelex')">Production Steelex</button>
+          <button class="dept-btn" onclick="selectDepartment('Production Steelwool')">Production Steelwool</button>
+          <button class="dept-btn" onclick="selectDepartment('Production Electrodes')">Production Electrodes</button>
+          <button class="dept-btn" onclick="selectDepartment('Inventory')">Inventory</button>
+          <button class="dept-btn" onclick="selectDepartment('Maintenance')">Maintenance</button>
+        </div>
+      </div>
+      
+      <!-- Department-Specific KPIs -->
+      <div class="card">
+        <div class="section-title">
+          <span>📊</span>
+          <span>Department-Specific KPIs</span>
+        </div>
+        <div id="deptKPIs"></div>
+      </div>
+      
+      <!-- Universal KPIs -->
+      <div class="card">
+        <div class="section-title">
+          <span>✓</span>
+          <span>Universal KPIs (All Departments)</span>
+        </div>
+        <div id="universalKPIs"></div>
+      </div>
+      
+      <!-- Performance Summary -->
+      <div class="card">
+        <div class="section-title">
+          <span>🎯</span>
+          <span>Performance Summary</span>
+        </div>
+        <div class="summary-grid">
+          <div id="scoreCard" class="score-card">
+            <div class="score-label">Overall Score</div>
+            <div class="score-value" id="totalScore">0.0%</div>
+            <div class="score-rating" id="rating">Not Rated</div>
+          </div>
+          <div class="rating-scale">
+            <h3>Rating Scale:</h3>
+            <div class="rating-item">
+              <span class="rating-score" style="color: #28a745;">90-100%</span>
+              <span>Outstanding</span>
+            </div>
+            <div class="rating-item">
+              <span class="rating-score" style="color: #17a2b8;">80-89%</span>
+              <span>Exceeds Expectations</span>
+            </div>
+            <div class="rating-item">
+              <span class="rating-score" style="color: #ffc107;">70-79%</span>
+              <span>Meets Expectations</span>
+            </div>
+            <div class="rating-item">
+              <span class="rating-score" style="color: #fd7e14;">60-69%</span>
+              <span>Needs Improvement</span>
+            </div>
+            <div class="rating-item">
+              <span class="rating-score" style="color: #dc3545;">Below 60%</span>
+              <span>Unsatisfactory</span>
+            </div>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary btn-full" onclick="downloadReport()">
+          <span>⬇</span>
+          <span>Download PDF Report</span>
+        </button>
+        
+        <button class="btn btn-success btn-full" onclick="saveEvaluation()">
+          <span>💾</span>
+          <span>Save Evaluation</span>
+        </button>
+      </div>
+      
+      <!-- Guidelines -->
+      <div class="card guidelines">
+        <h3>Evaluation Guidelines:</h3>
+        <ul>
+          <li>Each KPI should be scored from 0-100 based on observable performance</li>
+          <li>Safety Compliance and SOP Adherence are critical - scores below 70% require immediate action</li>
+          <li>Conduct evaluations weekly and maintain consistent scoring standards</li>
+          <li>Document specific incidents or observations that support the scores</li>
+          <li>Discuss results with employees and create action plans for improvement areas</li>
+          <li>All data is stored locally on your device for offline access</li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- TAB 2: VIEW SAVED EVALUATIONS -->
+    <div id="view-eval" class="tab-content">
+      <div class="card">
+        <div class="header">
+          <div class="header-icon">🔍</div>
+          <div class="header-text">
+            <h1>Saved Evaluations</h1>
+            <p>View and manage previously saved evaluations</p>
+          </div>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Search by Employee ID or Name</label>
+            <input type="text" id="searchQuery" placeholder="Enter Employee ID or Name" oninput="filterEvaluations()">
+          </div>
+          <div class="form-group">
+            <label>Filter by Department</label>
+            <select id="filterDepartment" onchange="filterEvaluations()">
+              <option value="">All Departments</option>
+              <option value="Production Steelex">Production Steelex</option>
+              <option value="Production Steelwool">Production Steelwool</option>
+              <option value="Production Electrodes">Production Electrodes</option>
+              <option value="Inventory">Inventory</option>
+              <option value="Maintenance">Maintenance</option>
+            </select>
+          </div>
+        </div>
+        
+        <div id="evaluationsList" class="evaluations-list">
+          <!-- Evaluations will be dynamically loaded here -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- TAB 3: EXPORT DATA -->
+    <div id="export" class="tab-content">
+      <div class="card">
+        <div class="header">
+          <div class="header-icon">📤</div>
+          <div class="header-text">
+            <h1>Export Data</h1>
+            <p>Export evaluations in various formats</p>
+          </div>
+        </div>
+        
+        <div class="export-stats">
+          <div class="stat-card">
+            <div class="stat-value" id="totalEvaluations">0</div>
+            <div class="stat-label">Total Evaluations</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="totalEmployees">0</div>
+            <div class="stat-label">Unique Employees</div>
+          </div>
+        </div>
+        
+        <button class="btn btn-primary btn-full" onclick="exportToCSV()">
+          <span>📊</span>
+          <span>Export to CSV</span>
+        </button>
+        
+        <button class="btn btn-info btn-full" onclick="exportToJSON()">
+          <span>📋</span>
+          <span>Export to JSON</span>
+        </button>
+        
+        <button class="btn btn-danger btn-full" onclick="clearAllData()">
+          <span>🗑️</span>
+          <span>Clear All Data</span>
+        </button>
+        
+        <div class="guidelines" style="margin-top: 20px;">
+          <h3>About Data Export:</h3>
+          <ul>
+            <li>CSV format is compatible with Excel and Google Sheets</li>
+            <li>JSON format preserves all data structure for backup</li>
+            <li>All data is stored locally on your device</li>
+            <li>Clear data option permanently removes all saved evaluations</li>
+            <li>Consider exporting regularly for backup purposes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <!-- Scripts -->
+  <script src="app.js"></script>
+  <script src="pdfGenerator.js"></script>
+  <script>
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(registration => {
+            console.log('Service Worker registered successfully:', registration.scope);
+          })
+          .catch(error => {
+            console.log('Service Worker registration failed:', error);
+          });
+      });
+    }
+    
+    // Check online/offline status
+    window.addEventListener('online', () => {
+      document.getElementById('offline-indicator').classList.remove('show');
+      showAlert('Connection restored', 'success');
+    });
+    
+    window.addEventListener('offline', () => {
+      document.getElementById('offline-indicator').classList.add('show');
+    });
+  </script>
+</body>
+</html>
