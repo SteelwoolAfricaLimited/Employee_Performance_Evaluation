@@ -1,919 +1,277 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Employee Performance Evaluation System for Steelwool Africa">
-  <meta name="theme-color" content="#2563eb">
-  <title>Steelwool Africa - KPI Evaluation</title>
-  
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  
-  <script src="https://apis.google.com/js/api.js"></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-  
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
-      padding: 20px;
-      min-height: 100vh;
-    }
-    
-    .auth-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 80vh;
-      text-align: center;
-    }
-    
-    .auth-card {
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      max-width: 400px;
-    }
-    
-    .auth-card h1 {
-      color: #1e293b;
-      margin-bottom: 10px;
-    }
-    
-    .auth-card p {
-      color: #64748b;
-      margin-bottom: 30px;
-    }
-    
-    .sign-in-btn {
-      background: #2563eb;
-      color: white;
-      border: none;
-      padding: 12px 32px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    
-    .sign-in-btn:hover {
-      background: #1d4ed8;
-    }
-    
-    .app-container {
-      display: none;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .app-container.show {
-      display: block;
-    }
-    
-    .user-info {
-      background: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .user-info span {
-      color: #1e293b;
-      font-weight: 500;
-    }
-    
-    .sign-out-btn {
-      background: #dc2626;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      background: white;
-      border-radius: 12px;
-      padding: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      overflow-x: auto;
-    }
-    
-    .tab-btn {
-      flex: 1;
-      min-width: 120px;
-      padding: 12px 16px;
-      border: none;
-      background: transparent;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: #64748b;
-      white-space: nowrap;
-    }
-    
-    .tab-btn:hover {
-      background: #f1f5f9;
-    }
-    
-    .tab-btn.active {
-      background: #2563eb;
-      color: white;
-    }
-    
-    .tab-content {
-      display: none;
-    }
-    
-    .tab-content.active {
-      display: block;
-    }
-    
-    .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      padding: 24px;
-      margin-bottom: 20px;
-    }
-    
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-    
-    .header-icon {
-      background: #2563eb;
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 28px;
-      font-weight: bold;
-    }
-    
-    .header-text h1 {
-      color: #1e293b;
-      font-size: 28px;
-      margin-bottom: 4px;
-    }
-    
-    .header-text p {
-      color: #64748b;
-      font-size: 14px;
-    }
-    
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-      margin-top: 20px;
-    }
-    
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .form-group label {
-      color: #475569;
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 6px;
-    }
-    
-    .form-group input,
-    .form-group select {
-      padding: 10px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      font-size: 14px;
-      transition: all 0.2s;
-    }
-    
-    .form-group input:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-    
-    .section-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #1e293b;
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-    
-    .dept-buttons {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-    }
-    
-    .dept-btn {
-      padding: 12px 16px;
-      border: 2px solid #e2e8f0;
-      background: #f8fafc;
-      border-radius: 8px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-size: 14px;
-    }
-    
-    .dept-btn:hover {
-      background: #e2e8f0;
-    }
-    
-    .dept-btn.active {
-      background: #2563eb;
-      color: white;
-      border-color: #2563eb;
-    }
-    
-    .kpi-item {
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 12px;
-    }
-    
-    .kpi-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
-    }
-    
-    .kpi-info h3 {
-      color: #1e293b;
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
-    
-    .kpi-info p {
-      color: #64748b;
-      font-size: 13px;
-    }
-    
-    .kpi-score-input {
-      width: 80px;
-      padding: 8px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      text-align: center;
-      font-size: 16px;
-      font-weight: 600;
-    }
-    
-    .kpi-score-display {
-      width: 80px;
-      padding: 8px 12px;
-      background: #f1f5f9;
-      border: 2px solid #2563eb;
-      border-radius: 6px;
-      text-align: center;
-      font-size: 16px;
-      font-weight: 600;
-      color: #2563eb;
-    }
-    
-    .sub-question {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      padding: 12px;
-      margin-bottom: 8px;
-    }
-    
-    .sub-question-label {
-      font-size: 13px;
-      color: #475569;
-      font-weight: 500;
-      margin-bottom: 8px;
-      display: block;
-    }
-    
-    .sub-question select {
-      width: 100%;
-      padding: 8px 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      font-size: 13px;
-    }
-    
-    .progress-bar {
-      width: 100%;
-      height: 8px;
-      background: #e2e8f0;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    
-    .progress-fill {
-      height: 100%;
-      background: #2563eb;
-      transition: width 0.3s;
-      border-radius: 4px;
-    }
-    
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-    
-    .score-card {
-      padding: 24px;
-      border-radius: 12px;
-      border: 2px solid;
-    }
-    
-    .score-card.outstanding {
-      background: #d4edda;
-      border-color: #28a745;
-    }
-    
-    .score-card.exceeds {
-      background: #d1ecf1;
-      border-color: #17a2b8;
-    }
-    
-    .score-card.meets {
-      background: #fff3cd;
-      border-color: #ffc107;
-    }
-    
-    .score-card.needs {
-      background: #ffe5b4;
-      border-color: #fd7e14;
-    }
-    
-    .score-card.unsatisfactory {
-      background: #f8d7da;
-      border-color: #dc3545;
-    }
-    
-    .score-value {
-      font-size: 48px;
-      font-weight: bold;
-      margin: 8px 0;
-    }
-    
-    .score-label {
-      color: #64748b;
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-    
-    .score-rating {
-      font-size: 18px;
-      font-weight: 600;
-      margin-top: 8px;
-    }
-    
-    .rating-scale {
-      background: #f8fafc;
-      padding: 20px;
-      border-radius: 8px;
-    }
-    
-    .rating-scale h3 {
-      color: #475569;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-    
-    .rating-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      font-size: 13px;
-    }
-    
-    .rating-score {
-      font-weight: 600;
-    }
-    
-    .btn {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .btn-primary {
-      background: #2563eb;
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      background: #1d4ed8;
-    }
-    
-    .btn-primary:disabled {
-      background: #94a3b8;
-      cursor: not-allowed;
-    }
-    
-    .btn-success {
-      background: #10b981;
-      color: white;
-    }
-    
-    .btn-success:hover {
-      background: #059669;
-    }
-    
-    .btn-info {
-      background: #0891b2;
-      color: white;
-    }
-    
-    .btn-info:hover {
-      background: #0e7490;
-    }
-    
-    .btn-full {
-      width: 100%;
-      justify-content: center;
-      margin-top: 16px;
-    }
-    
-    .guidelines {
-      background: #dbeafe;
-      border: 1px solid #93c5fd;
-      border-radius: 8px;
-      padding: 20px;
-    }
-    
-    .guidelines h3 {
-      color: #1e40af;
-      font-size: 16px;
-      margin-bottom: 12px;
-    }
-    
-    .guidelines ul {
-      list-style: none;
-      color: #1e40af;
-      font-size: 13px;
-    }
-    
-    .guidelines li {
-      padding: 6px 0;
-      padding-left: 20px;
-      position: relative;
-    }
-    
-    .guidelines li:before {
-      content: "•";
-      position: absolute;
-      left: 0;
-    }
-    
-    .alert {
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      display: none;
-    }
-    
-    .alert.success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-    
-    .alert.error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-    
-    .alert.show {
-      display: block;
-    }
-    
-    .eval-display {
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 20px;
-      display: none;
-    }
-    
-    .eval-display.show {
-      display: block;
-    }
-    
-    .eval-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    
-    .eval-field {
-      padding: 10px;
-      background: #f8fafc;
-      border-radius: 6px;
-    }
-    
-    .eval-field label {
-      display: block;
-      font-size: 12px;
-      color: #64748b;
-      margin-bottom: 4px;
-    }
-    
-    .eval-field .value {
-      font-size: 14px;
-      font-weight: 600;
-      color: #1e293b;
-    }
-    
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #64748b;
-    }
-    
-    .spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #2563eb;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    @media (max-width: 768px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .dept-buttons {
-        grid-template-columns: 1fr;
-      }
-      
-      .kpi-header {
-        flex-direction: column;
-        gap: 12px;
-      }
-      
-      .tabs {
-        flex-wrap: wrap;
-      }
-      
-      .tab-btn {
-        flex: 1 1 auto;
-      }
-      
-      .eval-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4285f4">
+    <meta name="description" content="Progressive Web App with Google Apps Script Integration">
+    
+    <title>PWA App</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: white;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 800px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 1rem;
+        }
+
+        .install-banner {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .install-banner.show {
+            display: flex;
+        }
+
+        .btn {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: #3367d6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #f1f3f4;
+            color: #202124;
+        }
+
+        .btn-secondary:hover {
+            background: #e8eaed;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .status {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f1f3f4;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #34a853;
+        }
+
+        .status-dot.offline {
+            background: #ea4335;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4285f4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 1rem auto;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .install-banner {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div id="authScreen" class="auth-screen">
-    <div class="auth-card">
-      <div class="header-icon" style="margin: 0 auto 20px;">SA</div>
-      <h1>Steelwool Africa</h1>
-      <p>Employee Performance Evaluation System</p>
-      <button class="sign-in-btn" onclick="handleSignIn()">
-        Sign in with Google
-      </button>
+    <div class="header">
+        <h1>📱 PWA Application</h1>
     </div>
-  </div>
 
-  <div id="appContainer" class="app-container">
-    <div id="alert" class="alert"></div>
-    
-    <div class="user-info">
-      <span id="userEmail">Not signed in</span>
-      <button class="sign-out-btn" onclick="handleSignOut()">Sign Out</button>
-    </div>
-    
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('new-eval')">
-        📝 New Evaluation
-      </button>
-      <button class="tab-btn" onclick="switchTab('view-eval')">
-        🔍 View/Download
-      </button>
-      <button class="tab-btn" onclick="switchTab('cumulative')">
-        📊 Cumulative
-      </button>
-      <button class="tab-btn" onclick="switchTab('overall-report')">
-        📋 Overall
-      </button>
-      <button class="tab-btn" onclick="switchTab('rankings')">
-        🏆 Rankings
-      </button>
-      <button class="tab-btn" onclick="switchTab('universal-rankings')">
-        ⭐ Universal
-      </button>
-    </div>
-    
-    <div id="new-eval" class="tab-content active">
-      <div class="card">
-        <div class="header">
-          <div class="header-icon">SA</div>
-          <div class="header-text">
-            <h1>Steelwool Africa</h1>
-            <p>Employee Performance Evaluation System</p>
-          </div>
-        </div>
-        
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Employee Name</label>
-            <select id="employeeName" onchange="autoFillEmployeeId()">
-              <option value="">Select employee...</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Employee ID</label>
-            <input type="text" id="employeeId" placeholder="Auto-filled" readonly>
-          </div>
-          <div class="form-group">
-            <label>Evaluation Week</label>
-            <select id="evaluationWeek">
-              <option value="">Select week...</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Supervisor Name</label>
-            <input type="text" id="supervisorName" placeholder="Enter supervisor name">
-          </div>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="section-title">
-          <span>📋</span>
-          <span>Select Department</span>
-        </div>
-        <div class="dept-buttons">
-          <button class="dept-btn active" onclick="selectDepartment('Production Steelex')">Production Steelex</button>
-          <button class="dept-btn" onclick="selectDepartment('Production Steelwool')">Production Steelwool</button>
-          <button class="dept-btn" onclick="selectDepartment('Production Electrodes')">Production Electrodes</button>
-          <button class="dept-btn" onclick="selectDepartment('Inventory')">Inventory</button>
-          <button class="dept-btn" onclick="selectDepartment('Maintenance')">Maintenance</button>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="section-title">
-          <span>🏭</span>
-          <span>Select Production Unit</span>
-        </div>
-        <div class="form-group">
-          <label>Production Unit</label>
-          <select id="productionUnit">
-            <option value="">Select production unit...</option>
-          </select>
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="section-title">
-          <span>📊</span>
-          <span>Department-Specific KPIs</span>
-        </div>
-        <div id="deptKPIs"></div>
-      </div>
-      
-      <div class="card">
-        <div class="section-title">
-          <span>✓</span>
-          <span>Universal KPIs (All Departments)</span>
-        </div>
-        <div id="universalKPIs"></div>
-      </div>
-      
-      <div class="card">
-        <div class="section-title">
-          <span>🎯</span>
-          <span>Performance Summary</span>
-        </div>
-        <div class="summary-grid">
-          <div id="scoreCard" class="score-card">
-            <div class="score-label">Overall Score</div>
-            <div class="score-value" id="totalScore">0.0%</div>
-            <div class="score-rating" id="rating">Not Rated</div>
-          </div>
-          <div class="rating-scale">
-            <h3>Rating Scale:</h3>
-            <div class="rating-item">
-              <span class="rating-score" style="color: #28a745;">90-100%</span>
-              <span>Outstanding</span>
+    <div class="container">
+        <div class="install-banner" id="installBanner">
+            <span>Install this app for a better experience!</span>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn" id="installBtn">Install</button>
+                <button class="btn btn-secondary" id="dismissBtn">Later</button>
             </div>
-            <div class="rating-item">
-              <span class="rating-score" style="color: #17a2b8;">80-89%</span>
-              <span>Exceeds Expectations</span>
-            </div>
-            <div class="rating-item">
-              <span class="rating-score" style="color: #ffc107;">70-79%</span>
-              <span>Meets Expectations</span>
-            </div>
-            <div class="rating-item">
-              <span class="rating-score" style="color: #fd7e14;">60-69%</span>
-              <span>Needs Improvement</span>
-            </div>
-            <div class="rating-item">
-              <span class="rating-score" style="color: #dc3545;">Below 60%</span>
-              <span>Unsatisfactory</span>
-            </div>
-          </div>
         </div>
-        
-        <button class="btn btn-primary btn-full" onclick="downloadReport()">
-          <span>⬇</span>
-          <span>Download Evaluation Report</span>
-        </button>
-        
-        <button class="btn btn-success btn-full" onclick="saveToSheet()">
-          <span>💾</span>
-          <span>Save to Google Sheets</span>
-        </button>
-      </div>
-      
-      <div class="card guidelines">
-        <h3>Evaluation Guidelines:</h3>
-        <ul>
-          <li>Use the 4-level rating system: Outstanding (95%), Exceeding (85%), Meeting (75%), Need Improvement (65%)</li>
-          <li>Safety Compliance and SOP Adherence are critical</li>
-          <li>Conduct evaluations weekly and maintain consistent standards</li>
-        </ul>
-      </div>
-    </div>
-    
-    <div id="view-eval" class="tab-content">
-      <div class="card">
-        <div class="header">
-          <div class="header-icon">🔍</div>
-          <div class="header-text">
-            <h1>View Evaluation</h1>
-            <p>Search previous evaluations</p>
-          </div>
-        </div>
-        
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Employee ID</label>
-            <input type="text" id="searchEmployeeId" placeholder="Enter Employee ID">
-          </div>
-          <div class="form-group">
-            <label>Department</label>
-            <select id="searchDepartment">
-              <option value="">Select Department</option>
-              <option value="Production Steelex">Production Steelex</option>
-              <option value="Production Steelwool">Production Steelwool</option>
-              <option value="Production Electrodes">Production Electrodes</option>
-              <option value="Inventory">Inventory</option>
-              <option value="Maintenance">Maintenance</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Week</label>
-            <input type="text" id="searchWeek" placeholder="e.g., Week 1">
-          </div>
-          <div class="form-group" style="display: flex; align-items: flex-end;">
-            <button class="btn btn-info" onclick="loadEvaluation()" style="width: 100%;">
-              <span>🔍</span>
-              <span>Load</span>
-            </button>
-          </div>
-        </div>
-        
-        <div id="evalDisplay" class="eval-display">
-          <h3 style="margin-bottom: 16px;">Evaluation Details</h3>
-          <div class="eval-grid">
-            <div class="eval-field"><label>Name</label><div class="value" id="dispName">-</div></div>
-            <div class="eval-field"><label>ID</label><div class="value" id="dispId">-</div></div>
-            <div class="eval-field"><label>Department</label><div class="value" id="dispDept">-</div></div>
-            <div class="eval-field"><label>Unit</label><div class="value" id="dispUnit">-</div></div>
-            <div class="eval-field"><label>Week</label><div class="value" id="dispWeek">-</div></div>
-            <div class="eval-field"><label>Supervisor</label><div class="value" id="dispSupervisor">-</div></div>
-            <div class="eval-field"><label>Score</label><div class="value" id="dispScore">-</div></div>
-            <div class="eval-field"><label>Rating</label><div class="value" id="dispRating">-</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div id="cumulative" class="tab-content">
-      <div class="card">
-        <div class="header">
-          <div class="header-icon">📊</div>
-          <div class="header-text">
-            <h1>Cumulative Report</h1>
-            <p>Average performance across weeks</p>
-          </div>
-        </div>
-        <p style="padding: 20px; background: #fff3cd; border-radius: 8px; color: #856404;">
-          Advanced report generation requires the Google Apps Script version. This PWA supports basic evaluation entry and simple PDF downloads.
-        </p>
-      </div>
-    </div>
-    
-    <div id="overall-report" class="tab-content">
-      <div class="card">
-        <div class="header">
-          <div class="header-icon">📋</div>
-          <div class="header-text">
-            <h1>Overall Employee Report</h1>
-            <p>Complete work history</p>
-          </div>
-        </div>
-        <p style="padding: 20px; background: #fff3cd; border-radius: 8px; color: #856404;">
-          Advanced report generation requires the Google Apps Script version. This PWA supports basic evaluation entry and simple PDF downloads.
-        </p>
-      </div>
-    </div>
-    
-    <div id="rankings" class="tab-content">
-      <div class="card">
-        <div class="header">
-          <div class="header-icon">🏆</div>
-          <div class="header-text">
-            <h1>Performance Rankings</h1>
-            <p>Top performers</p>
-          </div>
-        </div>
-        <p style="padding: 20px; background: #fff3cd; border-radius: 8px; color: #856404;">
-          Advanced report generation requires the Google Apps Script version. This PWA supports basic evaluation entry and simple PDF downloads.
-        </p>
-      </div>
-    </div>
-    
-    <div id="universal-rankings" class="tab-content">
-      <div class="card">
-        <div class="header">
-          <div class="header-icon">⭐</div>
-          <div class="header-text">
-            <h1>Universal KPIs Rankings</h1>
-            <p>Behavioral performance rankings</p>
-          </div>
-        </div>
-        <p style="padding: 20px; background: #fff3cd; border-radius: 8px; color: #856404;">
-          Advanced report generation requires the Google Apps Script version. This PWA supports basic evaluation entry and simple PDF downloads.
-        </p>
-      </div>
-    </div>
-  </div>
 
-  <div id="loadingIndicator" class="loading" style="display: none;">
-    <div class="spinner"></div>
-    <p>Loading...</p>
-  </div>
+        <div class="card">
+            <h2>Google Apps Script Integration</h2>
+            <p style="margin: 1rem 0; color: #5f6368;">
+                This PWA integrates with Google Apps Script to provide seamless functionality.
+            </p>
+            
+            <div class="status">
+                <div class="status-item">
+                    <span class="status-dot" id="onlineStatus"></span>
+                    <span id="onlineText">Online</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-dot" id="installStatus"></span>
+                    <span id="installText">Not Installed</span>
+                </div>
+            </div>
 
-  <script src="app.js"></script>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Fast</h3>
+                    <p>Lightning-fast performance</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📴</div>
+                    <h3>Offline</h3>
+                    <p>Works offline</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile</h3>
+                    <p>Mobile-friendly</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Web App Content</h2>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Loading web app...</p>
+            </div>
+            <div class="iframe-container">
+                <iframe 
+                    id="webAppFrame"
+                    src="https://script.google.com/macros/s/AKfycbxMNQBfj1UR4smtdH_Cjp9xNghU_fUEiOTd3XSTtYuS31qaFBBuHrtb5xfaISlcsV28Zg/exec"
+                    title="Google Apps Script Web App"
+                ></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
