@@ -1,12 +1,12 @@
 {
-  "name": "Steelwool Africa KPI Evaluation System",
-  "short_name": "KPI Evaluation",
-  "description": "Employee Performance Evaluation System for Steelwool Africa",
-  "start_url": "./",
+  "name": "PWA Application",
+  "short_name": "PWA App",
+  "description": "Progressive Web App with Google Apps Script Integration",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#f5f7fa",
-  "theme_color": "#2563eb",
-  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#4285f4",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon-192.png",
@@ -20,5 +20,8 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "categories": ["productivity", "utilities"],
+  "screenshots": [],
+  "shortcuts": []
 }
